@@ -3,7 +3,7 @@ Files I use with Chocolatey.
 
 https://chocolatey.org/
 
-#get-chocolatey-installed-packages.ps1
+# get-chocolatey-installed-packages.ps1
 
 Thanks to bcurran (https://github.com/bcurran3) and his awesome Chocolatey backup package, https://github.com/bcurran3/ChocolateyPackages/tree/master/choco-package-list-backup for inspiration.
 
