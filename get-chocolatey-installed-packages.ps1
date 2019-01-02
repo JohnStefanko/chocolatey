@@ -1,18 +1,25 @@
 <#
-Thanks to bcurran (https://github.com/bcurran3) and his awesome Chocolatey backup package, https://github.com/bcurran3/ChocolateyPackages/tree/master/choco-package-list-backup 
+Thanks to bcurran (https://github.com/bcurran3) and his awesome Chocolatey backup 
+package, https://github.com/bcurran3/ChocolateyPackages/tree/master/choco-package-list-backup 
 for inspiration.
 
-This script gets a list of installed Chocolatey packages and creates a packages.config XML file in your Documents folder that can be used to install all packages.
+This script gets a list of installed Chocolatey packages and creates a 
+packages.config XML file in your Documents folder that can be used to install all packages.
 To reinstall packages, run the following from the command line:
     choco install %homepath%\Documents\packages.config -y
 This script also creates an HTML doc providing package details for easy reference.
+Both files are created in the same directory where the script is run.
 #>
-$PathOut = $env:HOMEPATH + "\Documents\packages.config"
+$PathConfigOut = "packages.config"
+$PathHtmlOut = "chocolatey.html"
+#$PathOut = $env:HOMEPATH + "\Documents\packages.config"
+$PathXslt = "chocolatey-installed-package-report.xslt"
+
 $XmlSettings = New-Object System.Xml.XmlWriterSettings
 $XmlSettings.Indent = $true
 $XmlSettings.IndentChars = "    "
 # get a .Net XmlWriter to create the XML
-$XmlWriter = [System.XML.XmlWriter]::Create($PathOut, $XmlSettings)
+$XmlWriter = [System.XML.XmlWriter]::Create($PathConfigOut, $XmlSettings)
 $XmlWriter.WriteStartDocument()
 $XmlWriter.WriteStartElement("packages")
 
@@ -23,9 +30,10 @@ $Nuspec = New-Object -TypeName XML
 
 foreach($PackageId in $PackageList){
     # package install location info: https://chocolatey.org/docs/getting-started#how-does-chocolatey-work
-    # nuspec file info: https://chocolatey.org/docs/create-packages#nuspec and https://docs.microsoft.com/en-us/nuget/reference/nuspec
-    $Path = $env:ChocolateyInstall + "\lib\" + $PackageId + "\" + $PackageId + ".nuspec"
-    $Nuspec.Load($Path)
+    # nuspec file info: https://chocolatey.org/docs/create-packages#nuspec 
+    # and https://docs.microsoft.com/en-us/nuget/reference/nuspec
+    $PathNuspec = $env:ChocolateyInstall + "\lib\" + $PackageId + "\" + $PackageId + ".nuspec"
+    $Nuspec.Load($PathNuspec)
     $XmlWriter.WriteStartElement("package")
     $XmlWriter.WriteAttributeString("id", $PackageId)
     $XmlWriter.WriteAttributeString("title", $Nuspec.package.metadata.title)
@@ -38,9 +46,7 @@ $XmlWriter.WriteEndDocument()
 $XmlWriter.Flush()
 $XmlWriter.Close()
 
-$PathXslt = "chocolatey-installed-package-report.xslt"
-#$XsltSettings = New-Object System.Xml.Xsl.XsltSettings
-#$XsltSettings.EnableDocumentFunction = $true
 $Xslt = New-Object System.Xml.Xsl.XslCompiledTransform
 $Xslt.Load($PathXslt)
-$xslt.Transform($PathOut, "chocolatey.html")
+$xslt.Transform($PathConfigOut, $PathHtmlOut)
+Invoke-Item $PathHtmlOut

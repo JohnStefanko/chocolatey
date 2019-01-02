@@ -73,12 +73,7 @@
 <xsl:template match="package">
   <TR>
     <TD>
-    <a>
-      <xsl:attribute name="href">
-        <xsl:value-of select="@projecturl"/>
-      </xsl:attribute>
-      <xsl:value-of select="@title"/>
-    </a>
+      <a><xsl:attribute name="href"><xsl:value-of select="@projecturl"/></xsl:attribute><xsl:value-of select="@title"/></a>
     </TD>
     <TD><xsl:value-of select="@id"/></TD>
     <TD><xsl:value-of select="@summary"/></TD>
