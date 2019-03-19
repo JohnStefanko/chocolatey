@@ -8,12 +8,13 @@ packages.config XML file in your Documents folder that can be used to install al
 To reinstall packages, run the following from the command line:
     choco install %homepath%\Documents\packages.config -y
 This script also creates an HTML doc providing package details for easy reference.
-Both files are created in the same directory where the script is run.
+
 #>
-$PathConfigOut = "packages.config"
-$PathHtmlOut = "chocolatey.html"
-#$PathOut = $env:HOMEPATH + "\Documents\packages.config"
-$PathXslt = "chocolatey-installed-package-report.xslt"
+$PathConfigOut = $env:HOMEPATH + "\Documents\packages.config"
+$PathHtmlOut = $env:HOMEPATH + "\Documents\chocolatey.html"
+#$PathConfigOut = $PSSCRIPTROOT + "\packages.config"
+#$PathHtmlOut = $PSSCRIPTROOT + "\chocolatey.html"
+$PathXslt = $PSSCRIPTROOT + "\chocolatey-installed-package-report.xslt"
 
 $XmlSettings = New-Object System.Xml.XmlWriterSettings
 $XmlSettings.Indent = $true
